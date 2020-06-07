@@ -39,23 +39,71 @@
 
 (defun sulm-set-hide-verbosity ()
   (interactive)
+  (add-to-invisibility-spec 'stupid-uvm-log-cw)
+  (add-to-invisibility-spec 'stupid-uvm-log-w)
+  (add-to-invisibility-spec 'stupid-uvm-log-i)
   (save-excursion
     (goto-char (point-min))
     (while (not (eobp))
       (message "%d" (point))
-      (if (looking-at urlm-critical-w-regexp)
+      (if (looking-at "\
+\\(\\<UVM_CRITICAL_WARNING\\>\\)\\|\
+\\(\\<UVM_WARNING\\>\\)\\|\
+\\(\\<** Warning:\\>\\)\\|\
+\\(\\<Warning:\\>\\)\\|\
+\\(\\<UVM_INFO\\>\\)\\|\
+\\(\\<** Info:\\>\\)\\|\
+\\(\\<Info:\\>\\)") ; need to fix this as a concat of the key lists
           (cond
            ((match-end 1)
             (let ((po (point)))
               (message "%d" po)
               (forward-line 1)
               (put-text-property po (point) 'invisible 'stupid-uvm-log-cw)))
-           (t (forward-line 1)))
+           ((match-end 2)
+            (let ((po (point)))
+              (message "%d" po)
+              (forward-line 1)
+              (put-text-property po (point) 'invisible 'stupid-uvm-log-w)))
+           ((match-end 3)
+            (let ((po (point)))
+              (message "%d" po)
+              (forward-line 1)
+              (put-text-property po (point) 'invisible 'stupid-uvm-log-w)))
+           ((match-end 4)
+            (let ((po (point)))
+              (message "%d" po)
+              (forward-line 1)
+              (put-text-property po (point) 'invisible 'stupid-uvm-log-w)))
+           ((match-end 5)
+            (let ((po (point)))
+              (message "%d" po)
+              (forward-line 1)
+              (put-text-property po (point) 'invisible 'stupid-uvm-log-i)))
+           ((match-end 6)
+            (let ((po (point)))
+              (message "%d" po)
+              (forward-line 1)
+              (put-text-property po (point) 'invisible 'stupid-uvm-log-i)))
+           ((match-end 7)
+            (let ((po (point)))
+              (message "%d" po)
+              (forward-line 1)
+              (put-text-property po (point) 'invisible 'stupid-uvm-log-i)))
+           (t (forward-line 1))) ; need to add non UVM log line hide here
         (forward-line 1)))))
 
 (defun sulm-view-critical-warning ()
   (interactive)
   (remove-from-invisibility-spec 'stupid-uvm-log-cw))
+
+(defun sulm-view-warning ()
+  (interactive)
+  (remove-from-invisibility-spec 'stupid-uvm-log-w))
+
+(defun sulm-view-info ()
+  (interactive)
+  (remove-from-invisibility-spec 'stupid-uvm-log-i))
 
 (define-derived-mode stupid-uvm-log-mode
   fundamental-mode "stupid-uvm-log"
