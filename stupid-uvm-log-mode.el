@@ -110,6 +110,24 @@
   (interactive)
   (remove-from-invisibility-spec 'stupid-uvm-log-i))
 
+(defun sulm-toggle-view ()
+  (interactive)
+  (if (invisible-p 'stupid-uvm-log-cw)
+      (progn
+        (add-to-invisibility-spec 'stupid-uvm-log-w)
+        (add-to-invisibility-spec 'stupid-uvm-log-i)
+        (remove-from-invisibility-spec 'stupid-uvm-log-cw))
+    (if (invisible-p 'stupid-uvm-log-w)
+        (progn
+          (add-to-invisibility-spec 'stupid-uvm-log-i)
+          (remove-from-invisibility-spec 'stupid-uvm-log-w))
+      (if (invisible-p 'stupid-uvm-log-i)
+          (remove-from-invisibility-spec 'stupid-uvm-log-i)
+        (progn
+          (add-to-invisibility-spec 'stupid-uvm-log-cw)
+          (add-to-invisibility-spec 'stupid-uvm-log-w)
+          (add-to-invisibility-spec 'stupid-uvm-log-i))))))
+
 (define-derived-mode stupid-uvm-log-mode
   fundamental-mode "stupid-uvm-log"
   "Major mode for viewing UVM logs"
