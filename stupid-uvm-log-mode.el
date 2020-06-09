@@ -1,5 +1,10 @@
 ;; test of standard uvm report log mode
 
+(defcustom stupid-uvm-log-mode-hook nil
+  "Hook run after init of stupid uvm log mode"
+  :group 'stupid-uvm-log-mode
+  :type 'hook)
+
 ;; needs to bae a list as the simulator might insert non UVM lines
 (setq urlm-fatal-key-list '("UVM_FATAL" "** Fatal:" "Fatal:"))
 (setq urlm-error-key-list '("UVM_ERROR" "** Error:" "Error:"))
@@ -108,4 +113,5 @@
 (define-derived-mode stupid-uvm-log-mode
   fundamental-mode "stupid-uvm-log"
   "Major mode for viewing UVM logs"
-  (setq font-lock-defaults '(urlm-color-scheame)))
+  (setq font-lock-defaults '(urlm-color-scheame))
+  (sulm-set-hide-verbosity))
