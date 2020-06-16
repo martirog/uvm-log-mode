@@ -50,15 +50,14 @@
   (save-excursion
     (goto-char (point-min))
     (while (not (eobp))
-      (message "%d" (point))
       (if (looking-at "\
 \\(\\<UVM_CRITICAL_WARNING\\>\\)\\|\
 \\(\\<UVM_WARNING\\>\\)\\|\
-\\(\\<** Warning:\\>\\)\\|\
-\\(\\<Warning:\\>\\)\\|\
+\\(** \\<Warning\\>:\\)\\|\
+\\(\\<Warning\\>:\\)\\|\
 \\(\\<UVM_INFO\\>\\)\\|\
-\\(\\<** Info:\\>\\)\\|\
-\\(\\<Info:\\>\\)") ; need to fix this as a concat of the key lists
+\\(** \\<Info\\>:\\)\\|\
+\\(\\<Info\\>:\\)") ; need to fix this as a concat of the key lists
           (cond
            ((match-end 1)
             (put-text-property (line-beginning-position) (line-beginning-position 2) 'invisible 'stupid-uvm-log-cw))
