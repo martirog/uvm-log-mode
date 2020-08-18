@@ -12,6 +12,8 @@
 (setq urlm-warning-key-list '("UVM_WARNING" "** Warning:" "Warning:"))
 (setq urlm-info-key-list '("UVM_INFO" "** Info:" "Info:"))
 
+(setq urlm-all-keys (append urlm-fatal-key-list urlm-error-key-list urlm-critical-w-key-list urlm-warning-key-list urlm-info-key-list))
+(setq urlm-keys-re (regexp-opt urlm-all-keys t))
 ;; make regexp
 (setq urlm-fatal-regexp (regexp-opt urlm-fatal-key-list 'word))
 (setq urlm-error-regexp (regexp-opt urlm-error-key-list 'word))
@@ -42,6 +44,11 @@
         (,urlm-info-regexp . 'urlm-info-face)
         ))
 
+(defun urlm-get-next-entry ()
+  (if (re-search-forward urlm-keys-re)
+      (goto-char (match-beginning 1))
+    nil))
+
 (defun sulm-set-hide-verbosity ()
   (interactive)
   (add-to-invisibility-spec 'stupid-uvm-log-cw)
@@ -49,31 +56,35 @@
   (add-to-invisibility-spec 'stupid-uvm-log-i)
   (save-excursion
     (goto-char (point-min))
-    (while (not (eobp))
-      (if (looking-at "\
-\\(\\<UVM_CRITICAL_WARNING\\>\\)\\|\
-\\(\\<UVM_WARNING\\>\\)\\|\
-\\(** \\<Warning\\>:\\)\\|\
-\\(\\<Warning\\>:\\)\\|\
-\\(\\<UVM_INFO\\>\\)\\|\
-\\(** \\<Info\\>:\\)\\|\
-\\(\\<Info\\>:\\)") ; need to fix this as a concat of the key lists
-          (cond
-           ((match-end 1)
-            (put-text-property (line-beginning-position) (line-beginning-position 2) 'invisible 'stupid-uvm-log-cw))
-           ((match-end 2)
-            (put-text-property (line-beginning-position) (line-beginning-position 2) 'invisible 'stupid-uvm-log-w))
-           ((match-end 3)
-            (put-text-property (line-beginning-position) (line-beginning-position 2) 'invisible 'stupid-uvm-log-w))
-           ((match-end 4)
-            (put-text-property (line-beginning-position) (line-beginning-position 2) 'invisible 'stupid-uvm-log-w))
-           ((match-end 5)
-            (put-text-property (line-beginning-position) (line-beginning-position 2) 'invisible 'stupid-uvm-log-i))
-           ((match-end 6)
-            (put-text-property (line-beginning-position) (line-beginning-position 2) 'invisible 'stupid-uvm-log-i))
-           ((match-end 7)
-            (put-text-property (line-beginning-position) (line-beginning-position 2) 'invisible 'stupid-uvm-log-i))))
-      (forward-line 1))))
+    (let (begin invi (hide nil))
+      (while (not (eobp))
+        (message "%d" (point))
+        (if (re-search-forward urlm-keys-re nil t)
+            (progn
+              (if hide
+                  (progn
+                    (put-text-property begin (match-beginning 1) 'invisible invi)
+                    (put-text-property begin (match-beginning 1) 'field begin)))
+              (setq begin (match-beginning 1))
+              (cond
+               ((member (match-string 1) urlm-critical-w-key-list)
+                                        ;(put-text-property (line-beginning-position) (line-beginning-position 2) 'invisible 'stupid-uvm-log-cw))
+                (setq invi 'stupid-uvm-log-cw)
+                (setq hide t))
+               ((member (match-string 1) urlm-warning-key-list)
+                                        ;(put-text-property (line-beginning-position) (line-beginning-position 2) 'invisible 'stupid-uvm-log-w))
+                (setq invi 'stupid-uvm-log-w)
+                (setq hide t))
+               ((member (match-string 1) urlm-info-key-list)
+                                        ;(put-text-property (line-beginning-position) (line-beginning-position 2) 'invisible 'stupid-uvm-log-i))))
+                (setq invi 'stupid-uvm-log-i)
+                (setq hide t))
+               (t (setq hide nil))))
+          (goto-char (point-max))))
+      (if hide
+          (progn
+            (put-text-property begin (point) 'invisible invi)
+            (put-text-property begin (point) 'field begin)))))) ; how to find the end of the entrys and the begining of the rapup??
 
 (defun sulm-view-critical-warning ()
   (interactive)
@@ -105,8 +116,13 @@
           (add-to-invisibility-spec 'stupid-uvm-log-w)
           (add-to-invisibility-spec 'stupid-uvm-log-i))))))
 
+(defun sulm-before-change (start end)
+  (message (buffer-substring-no-properties start end)))
+
+
 (define-derived-mode stupid-uvm-log-mode
   fundamental-mode "stupid-uvm-log"
   "Major mode for viewing UVM logs"
   (setq font-lock-defaults '(urlm-color-scheame))
-  (sulm-set-hide-verbosity))
+  (sulm-set-hide-verbosity)
+  (add-hook 'before-change-functions 'sulm-before-change nil t))
