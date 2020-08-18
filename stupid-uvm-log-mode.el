@@ -126,4 +126,5 @@
   "Major mode for viewing UVM logs"
   (setq font-lock-defaults '(urlm-color-scheame))
   (sulm-set-hide-verbosity)
-  (add-hook 'before-change-functions 'sulm-before-change nil t))
+  (add-hook 'before-change-functions 'sulm-before-change nil t)
+  (hl-line-mode))
