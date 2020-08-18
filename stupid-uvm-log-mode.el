@@ -11,8 +11,9 @@
 (setq urlm-critical-w-key-list '("UVM_CRITICAL_WARNING"))
 (setq urlm-warning-key-list '("UVM_WARNING" "** Warning:" "Warning:"))
 (setq urlm-info-key-list '("UVM_INFO" "** Info:" "Info:"))
+(setq urlm-wrap-up-list '("-- UVM Report Summary ---"))
 
-(setq urlm-all-keys (append urlm-fatal-key-list urlm-error-key-list urlm-critical-w-key-list urlm-warning-key-list urlm-info-key-list))
+(setq urlm-all-keys (append urlm-fatal-key-list urlm-error-key-list urlm-critical-w-key-list urlm-warning-key-list urlm-info-key-list urlm-wrap-up-list))
 (setq urlm-keys-re (regexp-opt urlm-all-keys t))
 ;; make regexp
 (setq urlm-fatal-regexp (regexp-opt urlm-fatal-key-list 'word))
@@ -76,6 +77,9 @@
                ((member (match-string 1) urlm-info-key-list)
                 (setq invi 'stupid-uvm-log-i)
                 (setq hide t))
+               ((member (match-string 1) urlm-wrap-up-list)
+                (goto-char (point-max))
+                (setq hide nil))
                (t (setq hide nil))))
           (goto-char (point-max))))
       (if hide
