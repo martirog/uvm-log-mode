@@ -23,8 +23,8 @@
 (setq urlm-info-regexp (concat "\\(" (regexp-opt urlm-info-key-list) ".*\\)"))
 
 ;; define colors
-(defface urlm-fatal-face '((t :background "red")) "Fatal keyword look" :group 'stupud-uvm-log-mode)
-(defface urlm-error-face '((t :background "orange red")) "Error keyword look" :group 'stupud-uvm-log-mode)
+(defface urlm-fatal-face '((t :background "#9B0303")) "Fatal keyword look" :group 'stupud-uvm-log-mode)
+(defface urlm-error-face '((t :background "#87037E")) "Error keyword look" :group 'stupud-uvm-log-mode)
 (defface urlm-critical-warning-face '((t :background "gold")) "Critical Warning keyword look" :group 'stupud-uvm-log-mode)
 (defface urlm-warning-face '((t :background "yellow")) "Warning keyword look" :group 'stupud-uvm-log-mode)
 (defface urlm-info-face '((t :background "green")) "Info keyword look" :group 'stupud-uvm-log-mode)
