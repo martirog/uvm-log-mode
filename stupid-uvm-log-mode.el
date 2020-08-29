@@ -16,18 +16,18 @@
 (setq urlm-all-keys (append urlm-fatal-key-list urlm-error-key-list urlm-critical-w-key-list urlm-warning-key-list urlm-info-key-list urlm-wrap-up-list))
 (setq urlm-keys-re (regexp-opt urlm-all-keys t))
 ;; make regexp
-(setq urlm-fatal-regexp (concat "\\(" (regexp-opt urlm-fatal-key-list) ".*\\)"))
-(setq urlm-error-regexp (concat "\\(" (regexp-opt urlm-error-key-list) ".*\\)"))
-(setq urlm-critical-w-regexp (concat "\\(" (regexp-opt urlm-critical-w-key-list) ".*\\)"))
-(setq urlm-warning-regexp (concat "\\(" (regexp-opt urlm-warning-key-list) ".*\\)"))
-(setq urlm-info-regexp (concat "\\(" (regexp-opt urlm-info-key-list) ".*\\)"))
+(setq urlm-fatal-regexp (regexp-opt urlm-fatal-key-list 'word))
+(setq urlm-error-regexp (regexp-opt urlm-error-key-list 'word))
+(setq urlm-critical-w-regexp (regexp-opt urlm-critical-w-key-list 'word))
+(setq urlm-warning-regexp (regexp-opt urlm-warning-key-list 'word))
+(setq urlm-info-regexp (regexp-opt urlm-info-key-list 'word))
 
 ;; define colors
-(defface urlm-fatal-face '((t :background "red")) "Fatal keyword look" :group 'stupud-uvm-log-mode)
-(defface urlm-error-face '((t :background "orange red")) "Error keyword look" :group 'stupud-uvm-log-mode)
-(defface urlm-critical-warning-face '((t :background "gold")) "Critical Warning keyword look" :group 'stupud-uvm-log-mode)
-(defface urlm-warning-face '((t :background "yellow")) "Warning keyword look" :group 'stupud-uvm-log-mode)
-(defface urlm-info-face '((t :background "green")) "Info keyword look" :group 'stupud-uvm-log-mode)
+(defface urlm-fatal-face '((t :foreground "red")) "Fatal keyword look" :group 'stupud-uvm-log-mode)
+(defface urlm-error-face '((t :foreground "orange red")) "Error keyword look" :group 'stupud-uvm-log-mode)
+(defface urlm-critical-warning-face '((t :foreground "gold")) "Critical Warning keyword look" :group 'stupud-uvm-log-mode)
+(defface urlm-warning-face '((t :foreground "yellow")) "Warning keyword look" :group 'stupud-uvm-log-mode)
+(defface urlm-info-face '((t :foreground "green")) "Info keyword look" :group 'stupud-uvm-log-mode)
 
 ;(face-spec-set 'urlm-fatal-face            '((t :foreground "red"))          'face-defface-spec)
 ;(face-spec-set 'urlm-error-face            '((t :foreground "light red"))    'face-defface-spec)
