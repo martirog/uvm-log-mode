@@ -128,4 +128,5 @@
   (sulm-set-hide-verbosity)
   (add-hook 'before-change-functions 'sulm-before-change nil t)
   (hl-line-mode)
-  (read-only-mode))
+  (read-only-mode)
+  (view-mode))
