@@ -126,22 +126,23 @@
 
 (defun sulm-occur (regexp)
   (interactive "sregexp:")
-  (with-current-buffer (current-buffer)
-    (save-excursion
-      (goto-char (point-min))
-      (while (re-search-forward regexp nil t)
-        ;; Insert the replacement regexp.
-        (let ((obuf "*soccur*")
-              (str (field-string-no-properties)))
-          (get-buffer-create obuf)
-          (message "found")
-          (if str
-              (progn
-                (with-current-buffer obuf
-                  (insert str)
-                  (message str)
-                  (or (zerop (current-column))
-                      (insert "\n"))))))))))
+  (let ((obuf "*soccur*"))
+    (kill-buffer obuf)
+    (with-current-buffer (current-buffer)
+      (save-excursion
+        (goto-char (point-min))
+        (while (re-search-forward regexp nil t)
+          ;; Insert the replacement regexp.
+          (let ((str (field-string-no-properties)))
+            (get-buffer-create obuf)
+            (message "found")
+            (if str
+                (progn
+                  (with-current-buffer obuf
+                    (insert str)
+                    (message str)
+                    (or (zerop (current-column))
+                        (insert "\n")))))))))))
 
 (defun sulm-isearch-hook ()
   (define-key isearch-mode-map (kbd "C-o")
