@@ -120,6 +120,27 @@
 (defun sulm-before-change (start end)
   (message (buffer-substring-no-properties start end)))
 
+(defun sulm-occur (regexp)
+  (interactive "sregexp:")
+  (with-current-buffer (current-buffer)
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward regexp nil t)
+        ;; Insert the replacement regexp.
+        (let ((obuf "*soccur*")
+              (str (field-string)))
+          (get-buffer-create obuf)
+          (if str
+              (with-current-buffer obuf
+                (insert str)
+                (or (zerop (current-column))
+                    (insert "\n")))))))))
+
+(defun sulm-isearch-hook ()
+  (define-key isearch-mode-map (kbd "C-o")
+    (lambda () (interactive)
+      (let ((case-fold-search isearch-case-fold-search))
+        (sulm-occur isearch-string)))))
 
 (define-derived-mode stupid-uvm-log-mode
   fundamental-mode "stupid-uvm-log"
@@ -127,6 +148,7 @@
   (setq font-lock-defaults '(urlm-color-scheame))
   (sulm-set-hide-verbosity)
   (add-hook 'before-change-functions 'sulm-before-change nil t)
+  (add-hook 'isearch-mode-hook 'sulm-isearch-hook nil t)
   (hl-line-mode)
   (read-only-mode)
   (view-mode))
