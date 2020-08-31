@@ -5,6 +5,9 @@
   :group 'stupid-uvm-log-mode
   :type 'hook)
 
+;; Defien mode map
+(defvar stupid-uvm-log-mode-map nil "the key map for stupid UVM log mode")
+
 ;; needs to bae a list as the simulator might insert non UVM lines
 (setq urlm-fatal-key-list '("UVM_FATAL" "** Fatal:" "Fatal:"))
 (setq urlm-error-key-list '("UVM_ERROR" "** Error:" "Error:"))
@@ -52,14 +55,15 @@
 
 (defun sulm-set-hide-verbosity ()
   (interactive)
-  (add-to-invisibility-spec 'stupid-uvm-log-cw)
-  (add-to-invisibility-spec 'stupid-uvm-log-w)
-  (add-to-invisibility-spec 'stupid-uvm-log-i)
+  (setq buffer-invisibility-spec nil)
+  ;(add-to-invisibility-spec 'stupid-uvm-log-cw)
+  ;(add-to-invisibility-spec 'stupid-uvm-log-w)
+  ;(add-to-invisibility-spec 'stupid-uvm-log-i)
   (save-excursion
     (goto-char (point-min))
     (let (begin invi (hide nil))
       (while (not (eobp))
-        (message "%d" (point))
+        ;(message "%d" (point))
         (if (re-search-forward urlm-keys-re nil t)
             (progn
               (if hide
@@ -128,13 +132,16 @@
       (while (re-search-forward regexp nil t)
         ;; Insert the replacement regexp.
         (let ((obuf "*soccur*")
-              (str (field-string)))
+              (str (field-string-no-properties)))
           (get-buffer-create obuf)
+          (message "found")
           (if str
-              (with-current-buffer obuf
-                (insert str)
-                (or (zerop (current-column))
-                    (insert "\n")))))))))
+              (progn
+                (with-current-buffer obuf
+                  (insert str)
+                  (message str)
+                  (or (zerop (current-column))
+                      (insert "\n"))))))))))
 
 (defun sulm-isearch-hook ()
   (define-key isearch-mode-map (kbd "C-o")
@@ -142,12 +149,18 @@
       (let ((case-fold-search isearch-case-fold-search))
         (sulm-occur isearch-string)))))
 
+(defun sulm-build-mode-map ()
+  (setq stupid-uvm-log-mode-map (make-sparse-keymap))
+  (define-key stupid-uvm-log-mode-map (kbd "t") 'sulm-toggle-view))
+
 (define-derived-mode stupid-uvm-log-mode
   fundamental-mode "stupid-uvm-log"
   "Major mode for viewing UVM logs"
   (setq font-lock-defaults '(urlm-color-scheame))
+  (sulm-build-mode-map)
+  (use-local-map stupid-uvm-log-mode-map)
   (sulm-set-hide-verbosity)
-  (add-hook 'before-change-functions 'sulm-before-change nil t)
+  ;(add-hook 'before-change-functions 'sulm-before-change nil t)
   (add-hook 'isearch-mode-hook 'sulm-isearch-hook nil t)
   (hl-line-mode)
   (read-only-mode)
