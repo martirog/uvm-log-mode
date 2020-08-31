@@ -142,7 +142,9 @@
                     (insert str)
                     (message str)
                     (or (zerop (current-column))
-                        (insert "\n")))))))))))
+                        (insert "\n")))))))))
+    (pop-to-buffer obuf)
+    (stupid-uvm-log-mode)))
 
 (defun sulm-isearch-hook ()
   (define-key isearch-mode-map (kbd "C-o")
