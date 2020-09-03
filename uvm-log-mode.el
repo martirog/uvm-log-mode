@@ -156,8 +156,8 @@
   (setq stupid-uvm-log-mode-map (make-sparse-keymap))
   (define-key stupid-uvm-log-mode-map (kbd "t") 'sulm-toggle-view))
 
-(define-derived-mode stupid-uvm-log-mode
-  fundamental-mode "stupid-uvm-log"
+(define-derived-mode uvm-log-mode
+  fundamental-mode "uvm-log"
   "Major mode for viewing UVM logs"
   (setq font-lock-defaults '(urlm-color-scheame))
   (sulm-build-mode-map)
