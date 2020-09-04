@@ -10,11 +10,11 @@
 
 ;; needs to bae a list as the simulator might insert non UVM lines
 (setq urlm-fatal-key-list '("UVM_FATAL" "** Fatal:" "Fatal:"))
-(setq urlm-error-key-list '("UVM_ERROR" "** Error:" "Error:"))
+(setq urlm-error-key-list '("UVM_ERROR" "** Error:" "Error:" "Error-"))
 (setq urlm-critical-w-key-list '("UVM_CRITICAL_WARNING"))
 (setq urlm-warning-key-list '("UVM_WARNING" "** Warning:" "Warning:"))
 (setq urlm-info-key-list '("UVM_INFO" "** Info:" "Info:"))
-(setq urlm-wrap-up-list '("-- UVM Report Summary ---"))
+(setq urlm-wrap-up-list '("--- UVM Report Summary ---" "$finish"))
 
 (setq urlm-all-keys (append urlm-fatal-key-list urlm-error-key-list urlm-critical-w-key-list urlm-warning-key-list urlm-info-key-list urlm-wrap-up-list))
 (setq urlm-keys-re (regexp-opt urlm-all-keys t))
@@ -160,13 +160,14 @@
   fundamental-mode "uvm-log"
   "Major mode for viewing UVM logs"
   (setq font-lock-defaults '(urlm-color-scheame))
+  (buffer-disable-undo)
   (sulm-build-mode-map)
   (use-local-map stupid-uvm-log-mode-map)
   (sulm-set-hide-verbosity)
   ;(add-hook 'before-change-functions 'sulm-before-change nil t)
   (add-hook 'isearch-mode-hook 'sulm-isearch-hook nil t)
-  (hl-line-mode)
   (read-only-mode)
+  (hl-line-mode)
   (view-mode))
 
 (provide 'uvm-log-mode)
