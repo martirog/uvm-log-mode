@@ -168,3 +168,5 @@
   (hl-line-mode)
   (read-only-mode)
   (view-mode))
+
+(provide 'uvm-log-mode)
