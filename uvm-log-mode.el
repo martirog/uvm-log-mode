@@ -159,6 +159,7 @@
 (define-derived-mode uvm-log-mode
   fundamental-mode "uvm-log"
   "Major mode for viewing UVM logs"
+  (setq show-trailing-whitespace nil)
   (setq font-lock-defaults '(urlm-color-scheame))
   (buffer-disable-undo)
   (sulm-build-mode-map)
