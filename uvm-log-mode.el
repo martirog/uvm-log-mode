@@ -126,22 +126,24 @@
 
 (defun sulm-occur (regexp)
   (interactive "sregexp:")
-  (let ((obuf (concat "*soccur_" regexp "*")))
+  (let ((obuf (concat "*soccur_" regexp "*"))
+        (last-field "aaaa"))
     (when (get-buffer obuf)
       (kill-buffer obuf))
     (with-current-buffer (current-buffer)
       (save-excursion
         (goto-char (point-min))
         (while (re-search-forward regexp nil t)
-          ;; Insert the replacement regexp.
-          (let ((str (field-string-no-properties)))
-            (get-buffer-create obuf)
-            (if str
-                (progn
-                  (with-current-buffer obuf
-                    (insert str)
-                    (or (zerop (current-column))
-                        (insert "\n")))))))))
+          (unless (equal (get-text-property (point) 'field) last-field)
+            (setq last-field (get-text-property (point) 'field))
+            (let ((str (field-string-no-properties)))
+              (get-buffer-create obuf)
+              (if str
+                  (progn
+                    (with-current-buffer obuf
+                      (insert str)
+                      (or (zerop (current-column))
+                          (insert "\n"))))))))))
     (pop-to-buffer obuf)
     (with-current-buffer obuf
       (uvm-log-mode))))
