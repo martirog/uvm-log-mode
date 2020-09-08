@@ -136,16 +136,15 @@
           ;; Insert the replacement regexp.
           (let ((str (field-string-no-properties)))
             (get-buffer-create obuf)
-            (message "found")
             (if str
                 (progn
                   (with-current-buffer obuf
                     (insert str)
-                    (message str)
                     (or (zerop (current-column))
                         (insert "\n")))))))))
     (pop-to-buffer obuf)
-    (stupid-uvm-log-mode)))
+    (with-current-buffer obuf
+      (uvm-log-mode))))
 
 (defun sulm-isearch-hook ()
   (define-key isearch-mode-map (kbd "C-o")
