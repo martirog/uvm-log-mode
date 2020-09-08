@@ -126,8 +126,9 @@
 
 (defun sulm-occur (regexp)
   (interactive "sregexp:")
-  (let ((obuf "*soccur*"))
-    (kill-buffer obuf)
+  (let ((obuf (concat "*soccur_" regexp "*")))
+    (when (get-buffer obuf)
+      (kill-buffer obuf))
     (with-current-buffer (current-buffer)
       (save-excursion
         (goto-char (point-min))
