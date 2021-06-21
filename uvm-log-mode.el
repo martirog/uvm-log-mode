@@ -12,7 +12,7 @@
 (setq urlm-fatal-key-list '("UVM_FATAL" "** Fatal:" "Fatal:"))
 (setq urlm-error-key-list '("UVM_ERROR" "** Error:" "Error:" "Error-"))
 (setq urlm-critical-w-key-list '("UVM_CRITICAL_WARNING"))
-(setq urlm-warning-key-list '("UVM_WARNING" "** Warning:" "Warning:"))
+(setq urlm-warning-key-list '("UVM_WARNING" "** Warning:" "Warning:" "Warning-"))
 (setq urlm-info-key-list '("UVM_INFO" "** Info:" "Info:"))
 (setq urlm-wrap-up-list '("--- UVM Report Summary ---" "$finish"))
 
