@@ -6,7 +6,7 @@
   :type 'hook)
 
 ;; Defien mode map
-(defvar stupid-uvm-log-mode-map nil "the key map for stupid UVM log mode")
+(defvar uvm-log-mode-map nil "the key map for stupid UVM log mode")
 
 ;; needs to bae a list as the simulator might insert non UVM lines
 (setq urlm-fatal-key-list '("UVM_FATAL" "** Fatal:" "Fatal:"))
@@ -154,9 +154,50 @@
       (let ((case-fold-search isearch-case-fold-search))
         (sulm-occur isearch-string)))))
 
+(defun ulm-get-hex-word (pnt)
+  "find start and end of a hex word at point"
+  (let (p1 p2
+           (case-fold-search t))
+    (save-excursion
+      (goto-char pnt)
+      (skip-chars-backward "_a-fA-F0-9" )
+      (setq p1 (point))
+      (skip-chars-forward "_a-fA-F0-9" )
+      (setq p2 (point))
+      (message "%d %d" p1 p2)
+      (buffer-substring-no-properties p1 p2))))
+
+(defun ulm-lsb-to-left (str)
+  "this does not actually set lsb to left but it assumes it is right comming in"
+  (let ((rl (reverse (string-to-list str)))
+        (odd (mod (length hex-num-string) 2)))
+    (when (= odd 1)
+      (setq (nconc rl '(0))))
+    (apply #'string rl)))
+
+(defun ulm-hex-debug ()
+  "add hex nuber at point in a hexl buffer"
+  (interactive)
+  (let* ((hex-num-string (ulm-get-hex-word (point)))
+         (buf (get-buffer-create "*ulm-hex-debug*"))
+         (adjusted-str (ulm-lsb-to-left hex-num-string)))
+    (with-current-buffer buf
+      (toggle-enable-multibyte-characters)
+      (set-buffer-file-coding-system 'raw-text)
+      (when (eq major-mode 'hexl-mode)
+        (hexl-mode-exit))
+      (replace-regexp-in-string "[_]" "" hex-num-string)
+      (goto-char (point-max))
+      (let ((byte_cnt (/ (length adjusted-str) 2)))
+        (save-excursion
+          (insert-char ?a byte_cnt)))
+      (hexl-mode)
+      (hexl-insert-hex-string adjusted-str 1))))
+
 (defun sulm-build-mode-map ()
-  (setq stupid-uvm-log-mode-map (make-sparse-keymap))
-  (define-key stupid-uvm-log-mode-map (kbd "t") 'sulm-toggle-view))
+  (setq uvm-log-mode-map (make-sparse-keymap))
+  (define-key uvm-log-mode-map (kbd "t") 'sulm-toggle-view)
+  (define-key uvm-log-mode-map (kbd "h") 'ulm-hex-debug))
 
 (define-derived-mode uvm-log-mode
   fundamental-mode "uvm-log"
@@ -165,7 +206,7 @@
   (setq font-lock-defaults '(urlm-color-scheame))
   (buffer-disable-undo)
   (sulm-build-mode-map)
-  (use-local-map stupid-uvm-log-mode-map)
+  (use-local-map uvm-log-mode-map)
   (sulm-set-hide-verbosity)
   ;(add-hook 'before-change-functions 'sulm-before-change nil t)
   (add-hook 'isearch-mode-hook 'sulm-isearch-hook nil t)
