@@ -194,10 +194,22 @@
       (hexl-mode)
       (hexl-insert-hex-string adjusted-str 1))))
 
+(setq sulm-action-map (make-sparse-keymap))
+(define-key sulm-action-map (kbd "h") 'ulm-hex-debug)
+
+
+(eval-when-compile (require 'help-macro))
+(make-help-screen ulm-action-choise
+                  "action choises"
+                  "Action choises:
+h    shows the hex word at point in hex mode."
+                  sulm-action-map)
+
 (defun sulm-build-mode-map ()
   (setq uvm-log-mode-map (make-sparse-keymap))
   (define-key uvm-log-mode-map (kbd "t") 'sulm-toggle-view)
-  (define-key uvm-log-mode-map (kbd "h") 'ulm-hex-debug))
+  (define-key uvm-log-mode-map (kbd "h") 'ulm-hex-debug)
+  (define-key uvm-log-mode-map (kbd "a") 'ulm-action-choise))
 
 (define-derived-mode uvm-log-mode
   fundamental-mode "uvm-log"
