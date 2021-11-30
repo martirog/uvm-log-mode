@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 ;; test of standard uvm report log mode
 
 (defcustom stupid-uvm-log-mode-hook nil
@@ -48,12 +49,12 @@
         (,urlm-info-regexp . 'urlm-info-face)
         ))
 
-(defun urlm-get-next-entry ()
+(defun urlm--get-next-entry ()
   (if (re-search-forward urlm-keys-re)
       (goto-char (match-beginning 1))
     nil))
 
-(defun sulm-set-hide-verbosity ()
+(defun urlm-set-hide-verbosity ()
   (interactive)
   (setq buffer-invisibility-spec nil)
   ;(add-to-invisibility-spec 'stupid-uvm-log-cw)
@@ -91,19 +92,19 @@
             (put-text-property begin (point) 'invisible invi)
             (put-text-property begin (point) 'field begin)))))) ; how to find the end of the entrys and the begining of the rapup??
 
-(defun sulm-view-critical-warning ()
+(defun urlm-view-critical-warning ()
   (interactive)
   (remove-from-invisibility-spec 'stupid-uvm-log-cw))
 
-(defun sulm-view-warning ()
+(defun urlm-view-warning ()
   (interactive)
   (remove-from-invisibility-spec 'stupid-uvm-log-w))
 
-(defun sulm-view-info ()
+(defun urlm-view-info ()
   (interactive)
   (remove-from-invisibility-spec 'stupid-uvm-log-i))
 
-(defun sulm-toggle-view ()
+(defun urlm-toggle-view ()
   (interactive)
   (if (invisible-p 'stupid-uvm-log-cw)
       (progn
@@ -121,10 +122,10 @@
           (add-to-invisibility-spec 'stupid-uvm-log-w)
           (add-to-invisibility-spec 'stupid-uvm-log-i))))))
 
-(defun sulm-before-change (start end)
+(defun urlm--before-change (start end)
   (message (buffer-substring-no-properties start end)))
 
-(defun sulm-occur (regexp)
+(defun urlm--occur (regexp)
   (interactive "sregexp:")
   (let ((obuf (concat "*soccur_" regexp "*"))
         (last-field "aaaa"))
@@ -148,13 +149,13 @@
     (with-current-buffer obuf
       (uvm-log-mode))))
 
-(defun sulm-isearch-hook ()
+(defun urlm--isearch-hook ()
   (define-key isearch-mode-map (kbd "C-o")
     (lambda () (interactive)
       (let ((case-fold-search isearch-case-fold-search))
-        (sulm-occur isearch-string)))))
+        (urlm--occur isearch-string)))))
 
-(defun ulm-get-hex-word (pnt)
+(defun urlm-get-hex-word (pnt)
   "find start and end of a hex word at point"
   (let (p1 p2
            (case-fold-search t))
@@ -167,7 +168,7 @@
       ;(message "%d %d" p1 p2)
       (buffer-substring-no-properties p1 p2))))
 
-(defun ulm-lsb-to-left (str)
+(defun urlm--lsb-to-left (str)
   "this does not actually set lsb to left but it assumes it is right comming in"
   (let ((rl (reverse (string-to-list str)))
         (odd (mod (length str) 2)))
@@ -175,7 +176,7 @@
       (setq rl (nconc rl '())))
     (apply #'string rl)))
 
-(defun ulm-hex-debug ()
+(defun urlm-hex-debug ()
   "add hex nuber at point in a hexl buffer"
   (interactive)
   (let* ((hex-num-string (urlm-get-hex-word (point)))
@@ -194,22 +195,22 @@
       (hexl-mode)
       (hexl-insert-hex-string adjusted-str 1))))
 
-(setq sulm-action-map (make-sparse-keymap))
-(define-key sulm-action-map (kbd "h") 'ulm-hex-debug)
+(setq urlm-action-map (make-sparse-keymap))
+(define-key urlm-action-map (kbd "h") 'urlm-hex-debug)
 
 
 (eval-when-compile (require 'help-macro))
-(make-help-screen ulm-action-choise
+(make-help-screen urlm-action-choise
                   "action choises"
                   "Action choises:
 h    shows the hex word at point in hex mode."
-                  sulm-action-map)
+                  urlm-action-map)
 
-(defun sulm-build-mode-map ()
+(defun urlm--build-mode-map ()
   (setq uvm-log-mode-map (make-sparse-keymap))
-  (define-key uvm-log-mode-map (kbd "t") 'sulm-toggle-view)
-  (define-key uvm-log-mode-map (kbd "h") 'ulm-hex-debug)
-  (define-key uvm-log-mode-map (kbd "a") 'ulm-action-choise))
+  (define-key uvm-log-mode-map (kbd "t") 'urlm-toggle-view)
+  (define-key uvm-log-mode-map (kbd "h") 'urlm-hex-debug)
+  (define-key uvm-log-mode-map (kbd "a") 'urlm-action-choise))
 
 (define-derived-mode uvm-log-mode
   fundamental-mode "uvm-log"
@@ -217,11 +218,11 @@ h    shows the hex word at point in hex mode."
   (setq show-trailing-whitespace nil)
   (setq font-lock-defaults '(urlm-color-scheame))
   (buffer-disable-undo)
-  (sulm-build-mode-map)
+  (urlm--build-mode-map)
   (use-local-map uvm-log-mode-map)
-  (sulm-set-hide-verbosity)
-  ;(add-hook 'before-change-functions 'sulm-before-change nil t)
-  (add-hook 'isearch-mode-hook 'sulm-isearch-hook nil t)
+  (urlm-set-hide-verbosity)
+  ;(add-hook 'before-change-functions 'urlm--before-change nil t)
+  (add-hook 'isearch-mode-hook 'urlm--isearch-hook nil t)
   (read-only-mode)
   (hl-line-mode)
   (view-mode))
