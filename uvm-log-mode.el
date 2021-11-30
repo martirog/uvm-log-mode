@@ -164,23 +164,23 @@
       (setq p1 (point))
       (skip-chars-forward "_a-fA-F0-9" )
       (setq p2 (point))
-      (message "%d %d" p1 p2)
+      ;(message "%d %d" p1 p2)
       (buffer-substring-no-properties p1 p2))))
 
 (defun ulm-lsb-to-left (str)
   "this does not actually set lsb to left but it assumes it is right comming in"
   (let ((rl (reverse (string-to-list str)))
-        (odd (mod (length hex-num-string) 2)))
+        (odd (mod (length str) 2)))
     (when (= odd 1)
-      (setq (nconc rl '(0))))
+      (setq rl (nconc rl '())))
     (apply #'string rl)))
 
 (defun ulm-hex-debug ()
   "add hex nuber at point in a hexl buffer"
   (interactive)
-  (let* ((hex-num-string (ulm-get-hex-word (point)))
-         (buf (get-buffer-create "*ulm-hex-debug*"))
-         (adjusted-str (ulm-lsb-to-left hex-num-string)))
+  (let* ((hex-num-string (urlm-get-hex-word (point)))
+         (buf (get-buffer-create "*urlm-hex-debug*"))
+         (adjusted-str (urlm--lsb-to-left hex-num-string)))
     (with-current-buffer buf
       (toggle-enable-multibyte-characters)
       (set-buffer-file-coding-system 'raw-text)
