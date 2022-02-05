@@ -196,14 +196,9 @@
       (hexl-insert-hex-string adjusted-str 1))))
 
 (defun urlm--find-file-line-number ()
-  (message "line point %d" (point))
   (let ((string (buffer-substring-no-properties (point) (line-end-position))))
-    (message string)
     (if (string-match "[ \\t]*\\(([0-9]+)\\).*" string)
-        (progn
-          (message (match-string 1) string)
-          (string-to-number (substring (match-string 1 string) 1 -1)))
-      (message "failed")
+        (string-to-number (substring (match-string 1 string) 1 -1))
       nil)))
 
 (require 'ffap)
@@ -212,13 +207,9 @@
   (interactive)
   (let ((end-of-entry (field-end)))
     (save-excursion
-      (message "test %d" (point))
       (goto-char (field-beginning))
-      (message "point %d" (point))
-      (message "end-point %d" (field-end))
       (let ((file (ffap-next-guess nil end-of-entry))
             (line nil))
-        (message file)
         (if file
             (progn
               (setq line (urlm--find-file-line-number)) ; find line number in parantesis at this point
