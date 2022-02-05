@@ -249,7 +249,6 @@ o    open file log entry is originated"
   ;(add-hook 'before-change-functions 'urlm--before-change nil t)
   (add-hook 'isearch-mode-hook 'urlm--isearch-hook nil t)
   (read-only-mode)
-  (hl-line-mode)
-  (view-mode))
+  (hl-line-mode))
 
 (provide 'uvm-log-mode)
