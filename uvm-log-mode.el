@@ -195,22 +195,56 @@
       (hexl-mode)
       (hexl-insert-hex-string adjusted-str 1))))
 
+(defun urlm--find-file-line-number ()
+  (message "line point %d" (point))
+  (let ((string (buffer-substring-no-properties (point) (line-end-position))))
+    (message string)
+    (if (string-match "[ \\t]*\\(([0-9]+)\\).*" string)
+        (progn
+          (message (match-string 1) string)
+          (string-to-number (substring (match-string 1 string) 1 -1)))
+      (message "failed")
+      nil)))
+
+(require 'ffap)
+(defun urlm-find-origin-file-for-entry ()
+  "find file and jump to line number given in log"
+  (interactive)
+  (let ((end-of-entry (field-end)))
+    (save-excursion
+      (message "test %d" (point))
+      (goto-char (field-beginning))
+      (message "point %d" (point))
+      (message "end-point %d" (field-end))
+      (let ((file (ffap-next-guess nil end-of-entry))
+            (line nil))
+        (message file)
+        (if file
+            (progn
+              (setq line (urlm--find-file-line-number)) ; find line number in parantesis at this point
+              (switch-to-buffer (find-file-noselect file))
+              (if line
+                  (goto-line line)
+                (goto-line point-min))))))))
+
 (setq urlm-action-map (make-sparse-keymap))
 (define-key urlm-action-map (kbd "h") 'urlm-hex-debug)
-
+(define-key urlm-action-map (kbd "o") 'urlm-find-origin-file-for-entry)
 
 (eval-when-compile (require 'help-macro))
 (make-help-screen urlm-action-choise
                   "action choises"
                   "Action choises:
-h    shows the hex word at point in hex mode."
+h    shows the hex word at point in hex mode.
+o    open file log entry is originated"
                   urlm-action-map)
 
 (defun urlm--build-mode-map ()
   (setq uvm-log-mode-map (make-sparse-keymap))
   (define-key uvm-log-mode-map (kbd "t") 'urlm-toggle-view)
   (define-key uvm-log-mode-map (kbd "h") 'urlm-hex-debug)
-  (define-key uvm-log-mode-map (kbd "a") 'urlm-action-choise))
+  (define-key uvm-log-mode-map (kbd "a") 'urlm-action-choise)
+  (define-key uvm-log-mode-map (kbd "o") 'urlm-find-origin-file-for-entry))
 
 (define-derived-mode uvm-log-mode
   fundamental-mode "uvm-log"

@@ -1,10 +1,10 @@
-UVM_ERROR: /path/to/some/file(123)@12345 [id] message
-UVM_CRITICAL_WARNING: /path/to/some/file(123)@12345 [id] message
-UVM_WARNING: /path/to/some/file(123)@12345 [id] message
-UVM_FATAL: /path/to/some/file(123)@12345 [id] message
-UVM_INFO: /path/to/some/file(123)@12345 [id] message
+UVM_ERROR: /path/to/some/file (123)@12345 [id] message
+UVM_CRITICAL_WARNING: /path/to/some/file (123)@12345 [id] message
+UVM_WARNING: /path/to/some/file (123)@12345 [id] message
+UVM_FATAL: /path/to/some/file (123)@12345 [id] message
+UVM_INFO: /home/martin/.emacs.d/modes/uvm-log-mode/uvm-log-mode.el (123)@12345 [id] message
 this is not a UVM line
-UVM_CRITICAL_WARNING: /path/to/some/file(123)@12345 [id] message
+UVM_CRITICAL_WARNING: /path/to/some/file (123)@12345 [id] message
 
 --- UVM Report Summary ---
 summary here..
