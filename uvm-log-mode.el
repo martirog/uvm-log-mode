@@ -195,10 +195,14 @@
       (hexl-mode)
       (hexl-insert-hex-string adjusted-str 1))))
 
-(defun urlm--find-file-line-number ()
+(defun urlm--find-file-line-number-id-and-hier ()
   (let ((string (buffer-substring-no-properties (point) (line-end-position))))
-    (if (string-match "[ \\t]*\\(([0-9]+)\\).*" string)
-        (string-to-number (substring (match-string 1 string) 1 -1))
+    (message string)
+    (if (string-match "[ \\t]*(\\([0-9]+\\))[ \\t]*\\[\\(.*?\\)\\][ \\t]+\\([^ \\t]\\).*" string)
+        (let ((linenumber (string-to-number (match-string 1 string)))
+              (id (match-string 2 string))
+              (hier (match-string 3 string)))
+          '(linenumber id hier))
       nil)))
 
 (require 'ffap)
@@ -212,11 +216,11 @@
             (line nil))
         (if file
             (progn
-              (setq line (urlm--find-file-line-number)) ; find line number in parantesis at this point
+              (setq line (nth 0 (urlm--find-file-line-number-id-and-hier))) ; find line number in parantesis at this point
               (switch-to-buffer (find-file-noselect file))
               (if line
                   (goto-line line)
-                (goto-line point-min))))))))
+                (goto-line (point-min)))))))))
 
 (setq urlm-action-map (make-sparse-keymap))
 (define-key urlm-action-map (kbd "h") 'urlm-hex-debug)
