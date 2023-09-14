@@ -195,17 +195,13 @@
       (hexl-mode)
       (hexl-insert-hex-string adjusted-str 1))))
 
-(defun urlm--find-file-line-number-id-and-hier ()
-  (let ((string (buffer-substring-no-properties (point) (line-end-position))))
-    (message string)
-    (if (string-match "[ \\t]*(\\([0-9]+\\))[ \\t]*\\[\\(.*?\\)\\][ \\t]+\\([^ \\t]\\).*" string)
-        (let ((linenumber (string-to-number (match-string 1 string)))
-              (id (match-string 2 string))
-              (hier (match-string 3 string)))
-          '(linenumber id hier))
-      nil)))
-
 (require 'ffap)
+(defun urlm--find-file-line-number (begin end)
+  (save-excursion
+    (goto-char begin)
+    (and (re-search-forward "(\\([0-9]+\\))" end t)
+         (string-to-number (match-string 1)))))
+
 (defun urlm-find-origin-file-for-entry ()
   "find file and jump to line number given in log"
   (interactive)
@@ -216,7 +212,7 @@
             (line nil))
         (if file
             (progn
-              (setq line (nth 0 (urlm--find-file-line-number-id-and-hier))) ; find line number in parantesis at this point
+              (setq line (urlm--find-file-line-number (nth 1 ffap-string-at-point-region) end-of-entry)) ; find line number in parantesis at this point
               (switch-to-buffer (find-file-noselect file))
               (if line
                   (goto-line line)
