@@ -10,11 +10,11 @@
 (defvar uvm-log-mode-map nil "the key map for stupid UVM log mode")
 
 ;; needs to bae a list as the simulator might insert non UVM lines
-(setq urlm-fatal-key-list '("UVM_FATAL" "** Fatal:" "Fatal:"))
-(setq urlm-error-key-list '("UVM_ERROR" "** Error:" "Error:" "Error-"))
+(setq urlm-fatal-key-list '("UVM_FATAL" "** Fatal:" "Fatal:" "*Denali* Fatal" "xmsim: *F"))
+(setq urlm-error-key-list '("UVM_ERROR" "** Error:" "Error:" "Error-" "*Denali* Error" "xmsim: *E"))
 (setq urlm-critical-w-key-list '("UVM_CRITICAL_WARNING"))
-(setq urlm-warning-key-list '("UVM_WARNING" "** Warning:" "Warning:" "Warning-"))
-(setq urlm-info-key-list '("UVM_INFO" "** Info:" "Info:"))
+(setq urlm-warning-key-list '("UVM_WARNING" "** Warning:" "Warning:" "Warning-" "*Denali* Warning" "xmsim: *W"))
+(setq urlm-info-key-list '("UVM_INFO" "** Info:" "Info:" "*Denali*"))
 (setq urlm-wrap-up-list '("--- UVM Report Summary ---" "$finish"))
 
 (setq urlm-all-keys (append urlm-fatal-key-list urlm-error-key-list urlm-critical-w-key-list urlm-warning-key-list urlm-info-key-list urlm-wrap-up-list))
@@ -241,7 +241,7 @@ o    open file log entry is originated"
   fundamental-mode "uvm-log"
   "Major mode for viewing UVM logs"
   (setq show-trailing-whitespace nil)
-  (setq font-lock-defaults '(urlm-color-scheame))
+  (setq font-lock-defaults '(urlm-color-scheame t))
   (buffer-disable-undo)
   (urlm--build-mode-map)
   (use-local-map uvm-log-mode-map)
