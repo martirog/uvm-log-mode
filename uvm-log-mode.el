@@ -248,6 +248,7 @@ o    open file log entry is originated"
   (urlm-set-hide-verbosity)
   ;(add-hook 'before-change-functions 'urlm--before-change nil t)
   (add-hook 'isearch-mode-hook 'urlm--isearch-hook nil t)
+  (set-buffer-modified-p nil)
   (read-only-mode)
   (hl-line-mode))
 
