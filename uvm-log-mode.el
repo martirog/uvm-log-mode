@@ -221,21 +221,21 @@
 (setq urlm-action-map (make-sparse-keymap))
 (define-key urlm-action-map (kbd "h") 'urlm-hex-debug)
 (define-key urlm-action-map (kbd "o") 'urlm-find-origin-file-for-entry)
+(define-key urlm-action-map (kbd "t") 'urlm-toggle-view)
 
 (eval-when-compile (require 'help-macro))
 (make-help-screen urlm-action-choise
                   "action choises"
                   "Action choises:
 h    shows the hex word at point in hex mode.
-o    open file log entry is originated"
+o    open file log entry is originated.
+t    toggle message classes."
                   urlm-action-map)
 
 (defun urlm--build-mode-map ()
   (setq uvm-log-mode-map (make-sparse-keymap))
-  (define-key uvm-log-mode-map (kbd "t") 'urlm-toggle-view)
-  (define-key uvm-log-mode-map (kbd "h") 'urlm-hex-debug)
-  (define-key uvm-log-mode-map (kbd "a") 'urlm-action-choise)
-  (define-key uvm-log-mode-map (kbd "o") 'urlm-find-origin-file-for-entry))
+  (set-keymap-parent uvm-log-mode-map urlm-action-map)
+  (define-key uvm-log-mode-map (kbd "a") 'urlm-action-choise))
 
 (define-derived-mode uvm-log-mode
   fundamental-mode "uvm-log"
