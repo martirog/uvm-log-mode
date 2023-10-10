@@ -26,6 +26,9 @@
 (setq urlm-warning-regexp (regexp-opt urlm-warning-key-list 'word))
 (setq urlm-info-regexp (regexp-opt urlm-info-key-list 'word))
 
+;; Key map help string
+(setq urlm-key-map-help-string "Action choises:")
+
 ;; define colors
 (defface urlm-fatal-face '((t :foreground "red")) "Fatal keyword look" :group 'stupud-uvm-log-mode)
 (defface urlm-error-face '((t :foreground "orange red")) "Error keyword look" :group 'stupud-uvm-log-mode)
@@ -218,24 +221,25 @@
                   (goto-line line)
                 (goto-line (point-min)))))))))
 
-(setq urlm-action-map (make-sparse-keymap))
-(define-key urlm-action-map (kbd "h") 'urlm-hex-debug)
-(define-key urlm-action-map (kbd "o") 'urlm-find-origin-file-for-entry)
-(define-key urlm-action-map (kbd "t") 'urlm-toggle-view)
-
-(eval-when-compile (require 'help-macro))
-(make-help-screen urlm-action-choise
-                  "action choises"
-                  "Action choises:
-h    shows the hex word at point in hex mode.
-o    open file log entry is originated.
-t    toggle message classes."
-                  urlm-action-map)
-
 (defun urlm--build-mode-map ()
   (setq uvm-log-mode-map (make-sparse-keymap))
-  (set-keymap-parent uvm-log-mode-map urlm-action-map)
-  (define-key uvm-log-mode-map (kbd "a") 'urlm-action-choise))
+  (urlm-add-key-map-entry "h" #'urlm-hex-debug "shows the hex word at point in hex mode." t)
+  (urlm-add-key-map-entry "o" #'urlm-find-origin-file-for-entry "open file log entry is originated." t)
+  (urlm-add-key-map-entry "t" #'urlm-toggle-view "toggle message classes." t)
+  ;; Help string keep this as the last as it updates the help function
+  (urlm-add-key-map-entry "a" #'urlm-action-choise "show this help screen."))
+
+(require 'help-macro)
+(defun urlm-add-key-map-entry (key function description &optional dont-update-help)
+  "add to the keymap and update the help screen (the map must be created before invoking this)"
+  (define-key uvm-log-mode-map (kbd key) function)
+  (setq urlm-key-map-help-string (concat urlm-key-map-help-string "\n" key "    " description))
+  (unless dont-update-help
+    (make-help-screen urlm-action-choise
+      "action choises"
+      urlm-key-map-help-string
+      uvm-log-mode-map)))
+
 
 (define-derived-mode uvm-log-mode
   fundamental-mode "uvm-log"
