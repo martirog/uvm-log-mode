@@ -7,7 +7,7 @@
   :type 'hook)
 
 ;; Defien mode map
-(defvar uvm-log-mode-map nil "the key map for stupid UVM log mode")
+(defvar uvm-log-mode-map (make-sparse-keymap) "the key map for stupid UVM log mode")
 
 ;; needs to bae a list as the simulator might insert non UVM lines
 (setq urlm-fatal-key-list '("UVM_FATAL" "** Fatal:" "Fatal:" "*Denali* Fatal" "xmsim: *F"))
@@ -222,7 +222,6 @@
                 (goto-line (point-min)))))))))
 
 (defun urlm--build-mode-map ()
-  (setq uvm-log-mode-map (make-sparse-keymap))
   (urlm-add-key-map-entry "h" #'urlm-hex-debug "shows the hex word at point in hex mode." t)
   (urlm-add-key-map-entry "o" #'urlm-find-origin-file-for-entry "open file log entry is originated." t)
   (urlm-add-key-map-entry "t" #'urlm-toggle-view "toggle message classes." t)
